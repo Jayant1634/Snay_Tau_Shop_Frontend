@@ -1,0 +1,99 @@
+/* Footer Container */
+.footer {
+    background-color: #2C3E50; /* Deep Blue for Professionalism */
+    color: #FFFFFF;
+    padding: 3rem 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Footer Title */
+.footer-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #FBC02D; /* Golden Yellow */
+    margin-bottom: 1rem;
+}
+
+/* Footer Text */
+.footer p {
+    margin-bottom: 0.5rem;
+    color: #E0E0E0;
+}
+
+/* Footer Links */
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #FFECB3; /* Light Yellow */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #FBC02D; /* Golden Yellow */
+    text-decoration: underline;
+}
+
+/* Contact Info */
+.footer a {
+    color: #FFECB3; /* Light Yellow */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #FBC02D; /* Golden Yellow */
+}
+
+/* Footer Bottom Section */
+.footer-bottom {
+    margin-top: 2rem;
+    border-top: 1px solid #4F4F4F;
+    padding-top: 1rem;
+    font-size: 0.85rem;
+    color: #C0C0C0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer {
+        text-align: center;
+    }
+
+    .footer-title {
+        font-size: 1.1rem;
+    }
+
+    .footer p {
+        font-size: 0.9rem;
+    }
+
+    .footer-links a {
+        font-size: 0.9rem;
+    }
+
+    .footer-bottom {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer {
+        padding: 2rem 1rem;
+    }
+
+    .footer-title {
+        font-size: 1rem;
+    }
+
+    .footer-links a {
+        font-size: 0.85rem;
+    }
+
+    .footer-bottom {
+        font-size: 0.75rem;
+    }
+}

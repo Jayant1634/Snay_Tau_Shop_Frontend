@@ -1,0 +1,143 @@
+/* 🌍 General Hero Section */
+.hero {
+    position: relative;
+    background: linear-gradient(to right, #4caf50, #81c784); /* Gradient background */
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* 🛡️ Overlay for better readability */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4); /* Dark overlay */
+    z-index: 1;
+}
+
+/* 📦 Content Wrapper */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    width: 100%;
+    max-width: 1920px; /* Limit the maximum width for ultra-wide screens */
+}
+
+/* 📝 Hero Text Section */
+.hero-text {
+    text-align: center;
+    padding: 20px 0; /* Space above and below */
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.hero-button {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.hero-button:hover {
+    transform: scale(1.05);
+}
+
+/* 🎥 Hero Animation Section */
+.hero-animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.hero-lottie-wrapper {
+    max-width: 400px;
+    width: 100%;
+}
+
+.hero-lottie {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-button {
+        font-size: 0.9rem;
+    }
+
+    .hero-lottie-wrapper {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .hero-button {
+        font-size: 0.8rem;
+    }
+
+    .hero-lottie-wrapper {
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .hero-button {
+        font-size: 0.75rem;
+    }
+
+    .hero-lottie-wrapper {
+        max-width: 200px;
+    }
+}

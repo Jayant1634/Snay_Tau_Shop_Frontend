@@ -1,0 +1,26 @@
+/* src/pages/Support.css */
+
+/* 🌟 Support Container */
+.support-container {
+    padding: 20px;
+    background-color: #f9fafc;
+}
+
+/* 📝 Support Card */
+.support-card {
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 20px;
+    text-align: left;
+}
+
+/* 📨 Form Styling */
+.support-card form .form-control {
+    border-radius: 5px;
+}
+
+/* 📮 Submit Button */
+.support-card .btn-primary {
+    width: 100%;
+    margin-top: 10px;
+}

@@ -1,0 +1,124 @@
+/* Global Navbar Styles */
+.app-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    height: 72px;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+}
+
+/* Navbar Brand */
+.navbar-brand {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-brand:hover {
+    color: #388e3c;
+}
+
+/* Navbar Toggle */
+.navbar-toggler {
+    border: none;
+}
+
+/* Navbar Links */
+.nav-link-item {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4f4f4f !important;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-link-item:hover,
+.nav-link-item.active {
+    color: #388e3c !important;
+}
+
+/* Dropdown Menu */
+#user-nav-dropdown {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+#user-nav-dropdown .dropdown-item {
+    font-size: 0.9rem;
+    color: #4f4f4f;
+}
+
+#user-nav-dropdown .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #388e3c;
+}
+
+/* Navbar Buttons */
+.nav-btn {
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Login Button */
+.nav-btn-outline-primary {
+    border: 1px solid #388e3c;
+    color: #388e3c;
+}
+
+/* Signup Button */
+.nav-btn-primary {
+    background-color: #388e3c;
+    border: none;
+    color: #ffffff;
+}
+
+.nav-btn-primary:hover {
+    background-color: #2e7d32;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .app-navbar {
+        height: auto;
+        padding: 0.5rem 1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+
+    .nav-link-item {
+        margin: 0.5rem 0;
+    }
+
+    .nav-btn {
+        margin: 0.5rem 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .app-navbar {
+        padding: 0.5rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .nav-link-item {
+        font-size: 0.9rem;
+    }
+
+    .nav-btn {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.8rem;
+    }
+}
