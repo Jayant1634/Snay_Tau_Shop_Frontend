@@ -62,7 +62,7 @@ function Home() {
                             >
                                 <iframe
                                     title="Shop Location"
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.1929812740673!2d-122.0842494846819!3d37.421999779819095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb5e30d4c5e6b%3A0xa1c3b3b59a33e9a2!2sGoogleplex!5e0!3m2!1sen!2sin!4v1697971234567!5m2!1sen!2sin"
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3536.3010387516742!2d76.81271517497072!3d27.584195030913325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39729567720fb201%3A0xa7134818c0e8d3d!2sKissan%20krishi%20seva%20kendra!5e0!3m2!1sen!2sin!4v1736350173038!5m2!1sen!2sin"
                                     width="100%"
                                     height="350"
                                     style={{ border: "0" }}

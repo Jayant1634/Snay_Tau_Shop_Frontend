@@ -87,7 +87,10 @@ function AdminProducts() {
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Price</th>
+                                    <th>Category</th>
                                     <th>Stock</th>
+                                    <th>Sizes Available</th>
+                                    <th>Description</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -97,7 +100,16 @@ function AdminProducts() {
                                         <td>{product._id}</td>
                                         <td>{product.name}</td>
                                         <td>${product.price.toFixed(2)}</td>
+                                        <td>{product.category}</td>
                                         <td>{product.stock}</td>
+                                        <td>
+                                            {product.sizes.map(size => (
+                                                <div key={size.size}>
+                                                    {size.size}: {size.stock}
+                                                </div>
+                                            ))}
+                                        </td>
+                                        <td>{product.description.substring(0, 50)}...</td>
                                         <td>
                                             <Link to={`/admin/products/${product._id}/edit`}>
                                                 <Button variant="light" className="btn-sm me-2">

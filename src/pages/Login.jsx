@@ -38,9 +38,11 @@ function Login() {
 
             // Redirect based on role
             if (role === 'admin') {
-                navigate('/admin/products');
+                // navigate('/admin/products');
+                window.location.href = '/admin/products';
             } else {
-                navigate('/dashboard');
+                window.location.href = '/dashboard';
+                // navigate('/dashboard');
             }
         } catch (err) {
             console.error(err);

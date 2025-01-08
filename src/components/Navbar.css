@@ -8,6 +8,16 @@
     align-items: center;
 }
 
+body {
+    margin-top: 3em!important;
+  }
+
+@media screen and (max-width: 768px) {
+    body {
+        margin-top: 5em!important;
+    }
+}
+
 /* Navbar Brand */
 .navbar-brand {
     font-size: 1.5rem;

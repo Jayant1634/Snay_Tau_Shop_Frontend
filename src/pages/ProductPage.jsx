@@ -12,7 +12,10 @@ function ProductPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [qty, setQty] = useState(1);
+    const [selectedSize, setSelectedSize] = useState('');
     const [addingToCart, setAddingToCart] = useState(false);
+    // const [selectedQty, setSelectedQty] = useState(1);
+    
 
     // 📦 Fetch Product Details
     useEffect(() => {
@@ -24,6 +27,9 @@ function ProductPage() {
                 }
                 const data = await response.json();
                 setProduct(data);
+                if (data.sizes && data.sizes.length > 0) {
+                    setSelectedSize(data.sizes[0]);
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -37,6 +43,11 @@ function ProductPage() {
     // 🛒 Handle Add to Cart
     const handleAddToCart = async () => {
         try {
+            if (!selectedSize && product.sizes?.length > 0) {
+                alert("Please select a size");
+                return;
+            }
+
             setAddingToCart(true);
             const token = localStorage.getItem("token");
             if (!token) {
@@ -53,6 +64,7 @@ function ProductPage() {
                 body: JSON.stringify({
                     productId: product._id,
                     qty,
+                    size: selectedSize,
                 }),
             });
 
@@ -68,7 +80,7 @@ function ProductPage() {
         }
     };
 
-    // 🔄 Loading State
+    //🔄 Loading State
     if (loading) {
         return (
             <div className="product-loading-container">
@@ -135,8 +147,31 @@ function ProductPage() {
                                     </p>
                                 </ListGroup.Item>
 
+                                {/* Size Selector */}
+                                {product.sizes && product.sizes.length > 0 && (
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col xs={6}>Size:</Col>
+                                            <Col xs={6}>
+                                                <Form.Control
+                                                    as="select"
+                                                    value={selectedSize}
+                                                    onChange={(e) => setSelectedSize(e.target.value)}
+                                                    className="size-selector"
+                                                >
+                                                    {product.sizes.map((sizeObj, index) => (
+                                                        <option key={index} value={sizeObj.size}>
+                                                            {sizeObj.size} ({sizeObj.stock} available)
+                                                        </option>
+                                                    ))}
+                                                </Form.Control>
+                                            </Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                )}
+
                                 {/* Quantity Selector */}
-                                {product.stock > 0 && (
+                                {product.sizes && selectedSize && (
                                     <ListGroup.Item>
                                         <Row>
                                             <Col xs={6}>Quantity:</Col>
@@ -147,9 +182,9 @@ function ProductPage() {
                                                     onChange={(e) => setQty(Number(e.target.value))}
                                                     className="quantity-selector"
                                                 >
-                                                    {[...Array(product.stock).keys()].map((x) => (
-                                                        <option key={x + 1} value={x + 1}>
-                                                            {x + 1}
+                                                    {[...Array(Math.min(10, product.sizes.find(s => s.size === selectedSize)?.stock || 0))].map((_, index) => (
+                                                        <option key={index + 1} value={index + 1}>
+                                                            {index + 1}
                                                         </option>
                                                     ))}
                                                 </Form.Control>

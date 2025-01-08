@@ -1,7 +1,6 @@
 import axios from 'axios';
-
-export const API_URL = 'http://localhost:5000/api';
-
+// export const API_URL = 'https://thesnay-snay-tau-shop.hf.space/';
+export const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://thesnay-snay-tau-shop.hf.space/'
 export const register = (data) => axios.post(`${API_URL}/auth/register`, data);
 export const login = (data) => axios.post(`${API_URL}/auth/login`, data);
 
