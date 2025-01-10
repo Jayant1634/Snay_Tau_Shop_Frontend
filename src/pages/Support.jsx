@@ -1,6 +1,6 @@
 // src/pages/Support.jsx
 import { useState } from 'react';
-import { Container, Form, Button, Row, Col, Card, Alert } from 'react-bootstrap';
+import { Container, Form, Button, Row, Col, Card, Alert, Accordion } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaWhatsapp, FaClock, FaCheckCircle } from 'react-icons/fa';
 import './Support.css';
@@ -23,7 +23,6 @@ function Support() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // TODO: Implement form submission logic
         setSubmitted(true);
         setTimeout(() => setSubmitted(false), 3000);
     };
@@ -36,7 +35,7 @@ function Support() {
         >
             <Container className="support-container py-5">
                 {/* Header Section */}
-                <div className="text-center mb-5">
+                <div className="header-section text-center mb-5">
                     <h1 className="support-title">How Can We Help You?</h1>
                     <p className="support-subtitle">We're here to help and answer any question you might have</p>
                 </div>
@@ -180,40 +179,32 @@ function Support() {
                 {/* FAQ Section */}
                 <div className="faq-section mt-5">
                     <h3 className="text-center mb-4">Frequently Asked Questions</h3>
-                    <Row className="g-4">
-                        <Col md={6}>
-                            <Card className="faq-card">
-                                <Card.Body>
-                                    <h6>How do I track my order?</h6>
-                                    <p>You can track your order by logging into your account and visiting the Orders section. There you'll find real-time updates on your order status.</p>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={6}>
-                            <Card className="faq-card">
-                                <Card.Body>
-                                    <h6>What payment methods do you accept?</h6>
-                                    <p>We accept various payment methods including credit/debit cards, UPI, net banking, and cash on delivery for your convenience.</p>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={6}>
-                            <Card className="faq-card">
-                                <Card.Body>
-                                    <h6>What is your return policy?</h6>
-                                    <p>We offer a 7-day return policy for most items. Products must be unused and in their original packaging to be eligible for return.</p>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={6}>
-                            <Card className="faq-card">
-                                <Card.Body>
-                                    <h6>How long does shipping take?</h6>
-                                    <p>Shipping typically takes 3-5 business days depending on your location. Express delivery options are available for select areas.</p>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
+                    <Accordion>
+                        <Accordion.Item eventKey="0">
+                            <Accordion.Header>How do I track my order?</Accordion.Header>
+                            <Accordion.Body>
+                                You can track your order by logging into your account and visiting the Orders section. There you'll find real-time updates on your order status.
+                            </Accordion.Body>
+                        </Accordion.Item>
+                        <Accordion.Item eventKey="1">
+                            <Accordion.Header>What payment methods do you accept?</Accordion.Header>
+                            <Accordion.Body>
+                                We accept various payment methods including credit/debit cards, UPI, net banking, and cash on delivery for your convenience.
+                            </Accordion.Body>
+                        </Accordion.Item>
+                        <Accordion.Item eventKey="2">
+                            <Accordion.Header>What is your return policy?</Accordion.Header>
+                            <Accordion.Body>
+                                We offer a 7-day return policy for most items. Products must be unused and in their original packaging to be eligible for return.
+                            </Accordion.Body>
+                        </Accordion.Item>
+                        <Accordion.Item eventKey="3">
+                            <Accordion.Header>How long does shipping take?</Accordion.Header>
+                            <Accordion.Body>
+                                Shipping typically takes 3-5 business days depending on your location. Express delivery options are available for select areas.
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
                 </div>
             </Container>
         </motion.div>

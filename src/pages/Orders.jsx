@@ -1,39 +1,35 @@
-// src/pages/Orders.jsx
-import './Orders.css';
-import { useEffect, useState, useContext } from 'react';
-import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, ListGroup } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Row, Col, ListGroup, Badge, Button, Card, Alert, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { motion } from 'framer-motion';
 import { API_URL } from '../services/api';
+import Footer from '../components/Footer';
+import './Orders.css';
 
 function Orders() {
-    const { user } = useContext(AuthContext);
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [viewingOrder, setViewingOrder] = useState(null);
 
-    // Fetch user orders from API
     useEffect(() => {
-        const fetchUserOrders = async () => {
+        const fetchOrders = async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    throw new Error('No authentication token found');
+                    throw new Error('You must be logged in to view your orders');
                 }
 
-                const response = await fetch(`${API_URL}/orders/myorders`, {
+                const response = await fetch(`${API_URL}/orders`, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
                     },
                 });
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch orders');
                 }
+
                 const data = await response.json();
                 setOrders(data);
             } catch (err) {
@@ -43,179 +39,178 @@ function Orders() {
             }
         };
 
-        if (user) {
-            fetchUserOrders();
-        }
-    }, [user]);
+        fetchOrders();
+    }, []);
 
-    const handleViewOrder = (order) => {
-        setSelectedOrder(order);
-        setShowModal(true);
-    };
+    const handleCloseOrderDetail = () => setViewingOrder(null);
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedOrder(null);
-    };
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center loading-container">
+                <Spinner animation="border" role="status" variant="primary">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="error-container">
+                <Alert variant="danger" className="text-center">
+                    {error}
+                </Alert>
+            </div>
+        );
+    }
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="orders-container"
-        >
-            <Container>
-                <h2 className="orders-title">My Orders</h2>
-                {loading ? (
-                    <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
-                        <Spinner animation="border" role="status" className="loading-spinner">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                    </div>
-                ) : error ? (
-                    <Alert variant="danger" className="text-center">
-                        {error}
-                    </Alert>
-                ) : orders.length === 0 ? (
+        <>
+            <div className="orders-container">
+                <h1 className="orders-title">📜 My Orders</h1>
+
+                {orders.length === 0 ? (
                     <div className="empty-orders">
-                        <h4>You have no orders yet</h4>
-                        <p>Start shopping to place your first order!</p>
-                        <Link to="/products" className="auth-link">Browse Products</Link>
+                        <Alert variant="info" className="text-center">
+                            You have no orders. <Link to="/products" className="text-primary">Shop Now</Link>
+                        </Alert>
                     </div>
                 ) : (
-                    <>
-                        <Table className="orders-table" responsive>
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Date</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {orders.map(order => (
-                                    <tr key={order._id}>
-                                        <td>{order._id}</td>
-                                        <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                                        <td>₹{order.totalPrice.toFixed(2)}</td>
-                                        <td>
-                                            <Badge 
-                                                bg={
-                                                    order.status === 'Delivered' ? 'success' :
-                                                    order.status === 'Shipped' ? 'info' :
-                                                    order.status === 'Processing' ? 'warning' :
-                                                    order.status === 'Cancelled' ? 'danger' : 'secondary'
-                                                }
-                                                className={`status-badge status-${order.status.toLowerCase()}`}
-                                            >
-                                                {order.status}
-                                            </Badge>
-                                        </td>
-                                        <td>
-                                            <Button 
-                                                className="details-btn"
-                                                onClick={() => handleViewOrder(order)}
-                                            >
-                                                <i className="fas fa-eye"></i> Details
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-
-                        <Modal show={showModal} onHide={handleCloseModal} size="lg" className="order-modal">
-                            <Modal.Header closeButton>
-                                <Modal.Title>Order Details</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                {selectedOrder && (
-                                    <div>
-                                        <Row className="mb-3">
-                                            <Col md={6}>
-                                                <div className="order-info-section">
-                                                    <h5>Shipping Information</h5>
-                                                    <p><strong>Name:</strong> {selectedOrder.name}</p>
-                                                    <p><strong>Address:</strong> {selectedOrder.address}</p>
-                                                    <p><strong>City:</strong> {selectedOrder.city}</p>
-                                                    <p><strong>Postal Code:</strong> {selectedOrder.postalCode}</p>
-                                                    <p><strong>Country:</strong> {selectedOrder.country}</p>
-                                                </div>
+                    <Row className="orders-content">
+                        <Col lg={8} className="orders-list-container">
+                            <ListGroup variant="flush" className="orders-list">
+                                {orders.map((order) => (
+                                    <ListGroup.Item key={order._id} className="order-item">
+                                        <Row className="align-items-center">
+                                            <Col md={4}>
+                                                <h5>Order #{order._id.substring(0, 8)}...</h5>
+                                                <p className="text-muted small">
+                                                    Placed on: {new Date(order.createdAt).toLocaleDateString()}
+                                                </p>
                                             </Col>
-                                            <Col md={6}>
-                                                <div className="order-info-section">
-                                                    <h5>Order Information</h5>
-                                                    <p><strong>Order ID:</strong> {selectedOrder._id}</p>
-                                                    <p><strong>Date:</strong> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
-                                                    <p>
-                                                        <strong>Status:</strong>{' '}
-                                                        <Badge 
-                                                            bg={
-                                                                selectedOrder.status === 'Delivered' ? 'success' :
-                                                                selectedOrder.status === 'Shipped' ? 'info' :
-                                                                selectedOrder.status === 'Processing' ? 'warning' :
-                                                                selectedOrder.status === 'Cancelled' ? 'danger' : 'secondary'
-                                                            }
-                                                            className={`status-badge status-${selectedOrder.status.toLowerCase()}`}
-                                                        >
-                                                            {selectedOrder.status}
-                                                        </Badge>
-                                                    </p>
-                                                    <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
-                                                </div>
+                                            <Col md={3}>
+                                                <Badge
+                                                    bg={
+                                                        order.status === 'Delivered'
+                                                            ? 'success'
+                                                            : order.status === 'Shipped'
+                                                            ? 'info'
+                                                            : order.status === 'Processing'
+                                                            ? 'warning'
+                                                            : order.status === 'Cancelled'
+                                                            ? 'danger'
+                                                            : 'secondary'
+                                                    }
+                                                    className={`status-badge status-${order.status.toLowerCase()}`}
+                                                >
+                                                    {order.status}
+                                                </Badge>
+                                            </Col>
+                                            <Col md={3} className="text-center">
+                                                ₹{order.totalPrice.toFixed(2)}
+                                            </Col>
+                                            <Col md={2}>
+                                                <Button
+                                                    variant="outline-primary"
+                                                    size="sm"
+                                                    onClick={() => setViewingOrder(order)}
+                                                    className="details-btn"
+                                                >
+                                                    View Details
+                                                </Button>
                                             </Col>
                                         </Row>
-                                        <h5>Order Items</h5>
-                                        <ListGroup className="order-items-list">
-                                            {selectedOrder.items.map((item, index) => (
-                                                <ListGroup.Item key={index}>
-                                                    <Row className="align-items-center">
-                                                        <Col md={2}>
-                                                            <img 
-                                                                src={item.product.image} 
-                                                                alt={item.product.name}
-                                                                className="order-item-image"
-                                                            />
-                                                        </Col>
-                                                        <Col md={4}>
-                                                            <h6>{item.product.name}</h6>
-                                                            <small className="text-muted">Category: {item.product.category}</small>
-                                                        </Col>
-                                                        <Col md={3} className="text-center">
-                                                            Quantity: {item.qty}
-                                                        </Col>
-                                                        <Col md={3} className="text-end">
-                                                            ₹{(item.product.price * item.qty).toFixed(2)}
-                                                        </Col>
-                                                    </Row>
-                                                </ListGroup.Item>
-                                            ))}
-                                        </ListGroup>
-                                        <div className="order-total">
-                                            <Row>
-                                                <Col className="text-end">
-                                                    <p className="mb-1">Subtotal: ₹{(selectedOrder.totalPrice - selectedOrder.shippingFee).toFixed(2)}</p>
-                                                    <p className="mb-2">Shipping Fee: ₹{selectedOrder.shippingFee.toFixed(2)}</p>
-                                                    <h4>Total Amount: ₹{selectedOrder.totalPrice.toFixed(2)}</h4>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </div>
-                                )}
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button variant="secondary" onClick={handleCloseModal}>
-                                    Close
-                                </Button>
-                            </Modal.Footer>
-                        </Modal>
-                    </>
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        </Col>
+
+                        <Col lg={4}>
+                            <Card className="orders-summary">
+                                <ListGroup variant="flush">
+                                    <ListGroup.Item>
+                                        <h2 className="orders-summary-title">Order Summary</h2>
+                                        <p>Total Orders: <strong>{orders.length}</strong></p>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <Button
+                                            variant="success"
+                                            className="w-100"
+                                            onClick={() => alert('Redirect to order help page')}
+                                        >
+                                            Need Help?
+                                        </Button>
+                                    </ListGroup.Item>
+                                </ListGroup>
+                            </Card>
+                        </Col>
+                    </Row>
                 )}
-            </Container>
-        </motion.div>
+            </div>
+
+            {viewingOrder && (
+                <div className="order-detail-container">
+                    <h2 className="order-detail-title">Order Details</h2>
+                    <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        className="mb-3"
+                        onClick={handleCloseOrderDetail}
+                    >
+                        Back to Orders
+                    </Button>
+                    <Card className="order-detail-card">
+                        <ListGroup variant="flush">
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col md={6}>
+                                        <h5>Shipping Information</h5>
+                                        <p>Name: {viewingOrder.name}</p>
+                                        <p>Address: {viewingOrder.address}</p>
+                                        <p>City: {viewingOrder.city}</p>
+                                        <p>Postal Code: {viewingOrder.postalCode}</p>
+                                        <p>Country: {viewingOrder.country}</p>
+                                    </Col>
+                                    <Col md={6}>
+                                        <h5>Order Summary</h5>
+                                        <p>Order ID: {viewingOrder._id}</p>
+                                        <p>Date: {new Date(viewingOrder.createdAt).toLocaleString()}</p>
+                                        <p>Status: <strong>{viewingOrder.status}</strong></p>
+                                        <p>Total: ₹{viewingOrder.totalPrice.toFixed(2)}</p>
+                                    </Col>
+                                </Row>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                <h5>Items</h5>
+                                {viewingOrder.items.map((item) => (
+                                    <Row key={item.product._id} className="align-items-center mb-3">
+                                        <Col md={2}>
+                                            <img
+                                                src={item.product.image}
+                                                alt={item.product.name}
+                                                className="order-item-image"
+                                            />
+                                        </Col>
+                                        <Col md={4}>
+                                            {item.product.name}
+                                            <p className="text-muted small">Category: {item.product.category}</p>
+                                        </Col>
+                                        <Col md={3} className="text-center">
+                                            Quantity: {item.qty}
+                                        </Col>
+                                        <Col md={3} className="text-end">
+                                            ₹{(item.qty * item.product.price).toFixed(2)}
+                                        </Col>
+                                    </Row>
+                                ))}
+                            </ListGroup.Item>
+                        </ListGroup>
+                    </Card>
+                </div>
+            )}
+
+            <Footer />
+        </>
     );
 }
 
