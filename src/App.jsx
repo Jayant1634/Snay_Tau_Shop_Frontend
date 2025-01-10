@@ -10,10 +10,9 @@ import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
 import AdminUsers from './pages/AdminUsers';
 import AdminAddProduct from './pages/AdminAddProduct';
-import AdminDashboard from './pages/AdminDashboard'; // If implemented
+import AdminDashboard from './pages/AdminDashboard';
 import Products from './pages/Products';
 import Dashboard from './pages/Dashboard';
-import Wishlist from './pages/Wishlist';
 import Support from './pages/Support';
 import ProductPage from './pages/ProductPage';
 import Checkout from './pages/Checkout';
@@ -76,12 +75,8 @@ function App() {
     return (
         <AuthProvider>
             <Router>
-                {/* Navbar */}
                 <Navbar />
-                {/* Spacer to prevent content overlap */}
                 <div className="navbar-spacer"></div>
-
-                {/* Main Content Wrapper */}
                 <div className="main-content">
                     <ErrorBoundary>
                         <Routes>
@@ -92,11 +87,9 @@ function App() {
                             <Route path="/signup" element={<Signup />} />
                             <Route path="/products" element={<Products />} />
                             <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/wishlist" element={<Wishlist />} />
                             <Route path="/support" element={<Support />} />
                             <Route path="/products/:id" element={<ProductPage />}/>
                             <Route path="/checkout" element={<Checkout />} />
-
 
                             {/* Private Routes */}
                             <Route
@@ -116,6 +109,15 @@ function App() {
                                 }
                             />
 
+                            {/* Admin Routes */}
+                            <Route
+                                path="/admin/dashboard"
+                                element={
+                                    <AdminRoute>
+                                        <AdminDashboard />
+                                    </AdminRoute>
+                                }
+                            />
                             <Route
                                 path="/admin/products"
                                 element={
@@ -124,7 +126,6 @@ function App() {
                                     </AdminRoute>
                                 }
                             />
-                            {/* Admin Add Product Route */}
                             <Route
                                 path="/admin/products/create"
                                 element={
@@ -146,14 +147,6 @@ function App() {
                                 element={
                                     <AdminRoute>
                                         <AdminUsers />
-                                    </AdminRoute>
-                                }
-                            />
-                            <Route
-                                path="/admin/dashboard"
-                                element={
-                                    <AdminRoute>
-                                        <AdminDashboard />
                                     </AdminRoute>
                                 }
                             />

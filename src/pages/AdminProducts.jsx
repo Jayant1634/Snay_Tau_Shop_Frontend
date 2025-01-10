@@ -1,3 +1,4 @@
+import './AdminProducts.css';
 import { useEffect, useState } from 'react';
 import { Container, Table, Button, Alert, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -63,25 +64,26 @@ function AdminProducts() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
+            className="admin-products-container"
         >
-            <Container className="my-5">
-                <h2 className="mb-4 text-center">Manage Products</h2>
+            <Container>
+                <h2 className="admin-products-title">Manage Products</h2>
                 {message && <Alert variant="success">{message}</Alert>}
                 {error && <Alert variant="danger">{error}</Alert>}
                 {loading ? (
                     <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
-                        <Spinner animation="border" role="status" variant="primary">
+                        <Spinner animation="border" role="status" className="loading-spinner">
                             <span className="visually-hidden">Loading...</span>
                         </Spinner>
                     </div>
                 ) : (
                     <>
                         <Link to="/admin/products/create">
-                            <Button variant="success" className="mb-3">
+                            <Button className="add-product-btn mb-4">
                                 <i className="fas fa-plus"></i> Add Product
                             </Button>
                         </Link>
-                        <Table striped bordered hover responsive>
+                        <Table className="products-table" responsive>
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -99,26 +101,27 @@ function AdminProducts() {
                                     <tr key={product._id}>
                                         <td>{product._id}</td>
                                         <td>{product.name}</td>
-                                        <td>${product.price.toFixed(2)}</td>
+                                        <td>₹{product.price.toFixed(2)}</td>
                                         <td>{product.category}</td>
-                                        <td>{product.stock}</td>
+                                        <td className={product.stock < 10 ? 'stock-warning' : 'stock-ok'}>
+                                            {product.stock}
+                                        </td>
                                         <td>
                                             {product.sizes.map(size => (
-                                                <div key={size.size}>
+                                                <span key={size.size} className="size-badge">
                                                     {size.size}: {size.stock}
-                                                </div>
+                                                </span>
                                             ))}
                                         </td>
-                                        <td>{product.description.substring(0, 50)}...</td>
+                                        <td className="description-cell">{product.description}</td>
                                         <td>
                                             <Link to={`/admin/products/${product._id}/edit`}>
-                                                <Button variant="light" className="btn-sm me-2">
+                                                <Button className="edit-btn me-2">
                                                     <i className="fas fa-edit"></i>
                                                 </Button>
                                             </Link>
                                             <Button
-                                                variant="danger"
-                                                className="btn-sm"
+                                                className="delete-btn"
                                                 onClick={() => handleDelete(product._id)}
                                             >
                                                 <i className="fas fa-trash"></i>

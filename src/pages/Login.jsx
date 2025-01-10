@@ -1,5 +1,6 @@
 // src/pages/Login.jsx
 
+import './Auth.css';
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +10,6 @@ import { API_URL } from '../services/api';
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('user');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -29,20 +29,18 @@ function Login() {
         try {
             const res = await axios.post(`${API_URL}/auth/login`, {
                 email,
-                password,
-                role,
+                password
             });
 
             const { token } = res.data;
             localStorage.setItem('token', token);
 
-            // Redirect based on role
-            if (role === 'admin') {
-                // navigate('/admin/products');
+            // Get user role from token
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.role === 'admin') {
                 window.location.href = '/admin/products';
             } else {
                 window.location.href = '/dashboard';
-                // navigate('/dashboard');
             }
         } catch (err) {
             console.error(err);
@@ -53,88 +51,66 @@ function Login() {
     };
 
     return (
-        <Container fluid className="login-page bg-light">
-            <Row className="vh-100">
-                <Col md={{ span: 6, offset: 3 }} className="d-flex justify-content-center align-items-center">
-                    <div className="login-box shadow-lg p-5 rounded bg-white">
-                        <h3 className="text-center mb-4 text-primary fw-bold">Login</h3>
-                        {error && <Alert variant="danger" className="text-center">{error}</Alert>}
+        <div className="auth-container">
+            <Container>
+                <Row className="justify-content-center">
+                    <Col md={6}>
+                        <div className="auth-box">
+                            <h3 className="auth-title">Welcome Back</h3>
+                            {error && <Alert variant="danger" className="auth-alert">{error}</Alert>}
 
-                        <Form onSubmit={handleSubmit} noValidate>
-                            {/* Email Field */}
-                            <Form.Group controlId="formEmail" className="mb-3">
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    placeholder="Enter your email"
-                                />
-                            </Form.Group>
+                            <Form onSubmit={handleSubmit} noValidate>
+                                <Form.Group controlId="formEmail" className="mb-3">
+                                    <Form.Label>Email Address</Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        placeholder="Enter your email"
+                                    />
+                                </Form.Group>
 
-                            {/* Password Field */}
-                            <Form.Group controlId="formPassword" className="mb-3">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                    placeholder="Enter your password"
-                                />
-                            </Form.Group>
+                                <Form.Group controlId="formPassword" className="mb-3">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        placeholder="Enter your password"
+                                    />
+                                </Form.Group>
 
-                            {/* Role Selection */}
-                            <Form.Group controlId="formRole" className="mb-4">
-                                <Form.Check
-                                    type="radio"
-                                    label="User"
-                                    name="role"
-                                    value="user"
-                                    checked={role === 'user'}
-                                    onChange={(e) => setRole(e.target.value)}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Admin"
-                                    name="role"
-                                    value="admin"
-                                    checked={role === 'admin'}
-                                    onChange={(e) => setRole(e.target.value)}
-                                />
-                            </Form.Group>
+                                <Button className="auth-btn w-100" type="submit" disabled={loading}>
+                                    {loading ? (
+                                        <>
+                                            <Spinner
+                                                as="span"
+                                                animation="border"
+                                                size="sm"
+                                                role="status"
+                                                className="auth-spinner"
+                                            />
+                                            Logging in...
+                                        </>
+                                    ) : (
+                                        'Login'
+                                    )}
+                                </Button>
+                            </Form>
 
-                            {/* Login Button */}
-                            <Button variant="primary" type="submit" className="w-100" disabled={loading}>
-                                {loading ? (
-                                    <>
-                                        <Spinner
-                                            as="span"
-                                            animation="border"
-                                            size="sm"
-                                            role="status"
-                                            aria-hidden="true"
-                                        />{' '}
-                                        Logging in...
-                                    </>
-                                ) : (
-                                    'Login'
-                                )}
-                            </Button>
-                        </Form>
-
-                        {/* Redirect to Signup */}
-                        <p className="text-center mt-3">
-                            Dont have an account?{' '}
-                            <a href="/signup" className="text-primary">
-                                Sign Up
-                            </a>
-                        </p>
-                    </div>
-                </Col>
-            </Row>
-        </Container>
+                            <p className="redirect-text">
+                                Don't have an account?{' '}
+                                <a href="/signup" className="auth-link">
+                                    Sign Up
+                                </a>
+                            </p>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        </div>
     );
 }
 

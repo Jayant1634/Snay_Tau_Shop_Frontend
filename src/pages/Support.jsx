@@ -1,52 +1,222 @@
 // src/pages/Support.jsx
-import { Container, Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Form, Button, Row, Col, Card, Alert } from 'react-bootstrap';
+import { motion } from 'framer-motion';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaWhatsapp, FaClock, FaCheckCircle } from 'react-icons/fa';
 import './Support.css';
 
 function Support() {
-    return (
-        <Container className="support-container mt-5">
-            <h1 className="text-center mb-4">Customer Support 📞</h1>
-            <Row>
-                {/* Contact Details */}
-                <Col md={6}>
-                    <Card className="support-card mb-4 shadow-sm">
-                        <Card.Body>
-                            <h4>📧 Email Support</h4>
-                            <p>support@kisaankrishiseva.com</p>
-                            <h4>📱 Phone Support</h4>
-                            <p>+91-9876543210</p>
-                            <h4>📍 Address</h4>
-                            <p>123, Farmers Street, Agriculture City</p>
-                        </Card.Body>
-                    </Card>
-                </Col>
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+    });
+    const [submitted, setSubmitted] = useState(false);
 
-                {/* Contact Form */}
-                <Col md={6}>
-                    <Card className="support-card shadow-sm">
-                        <Card.Body>
-                            <Form>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Name</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter your name" />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control type="email" placeholder="Enter your email" />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Message</Form.Label>
-                                    <Form.Control as="textarea" rows={4} placeholder="Your message" />
-                                </Form.Group>
-                                <Button variant="primary" type="submit">
-                                    Submit
-                                </Button>
-                            </Form>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // TODO: Implement form submission logic
+        setSubmitted(true);
+        setTimeout(() => setSubmitted(false), 3000);
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+        >
+            <Container className="support-container py-5">
+                {/* Header Section */}
+                <div className="text-center mb-5">
+                    <h1 className="support-title">How Can We Help You?</h1>
+                    <p className="support-subtitle">We're here to help and answer any question you might have</p>
+                </div>
+
+                <Row className="g-4">
+                    {/* Contact Information */}
+                    <Col lg={4}>
+                        <div className="contact-info">
+                            {/* Quick Contact */}
+                            <Card className="contact-card mb-4">
+                                <Card.Body>
+                                    <h5 className="section-title">Quick Contact</h5>
+                                    <div className="contact-item">
+                                        <FaEnvelope className="contact-icon" />
+                                        <div>
+                                            <h6>Email Us</h6>
+                                            <p>support@kisaankrishiseva.com</p>
+                                        </div>
+                                    </div>
+                                    <div className="contact-item">
+                                        <FaPhone className="contact-icon" />
+                                        <div>
+                                            <h6>Call Us</h6>
+                                            <p>+91-9876543210</p>
+                                        </div>
+                                    </div>
+                                    <div className="contact-item">
+                                        <FaWhatsapp className="contact-icon" />
+                                        <div>
+                                            <h6>WhatsApp</h6>
+                                            <p>+91-9876543210</p>
+                                        </div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+
+                            {/* Business Hours */}
+                            <Card className="contact-card mb-4">
+                                <Card.Body>
+                                    <h5 className="section-title">Business Hours</h5>
+                                    <div className="contact-item">
+                                        <FaClock className="contact-icon" />
+                                        <div>
+                                            <h6>Monday - Saturday</h6>
+                                            <p>9:00 AM - 7:00 PM</p>
+                                        </div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+
+                            {/* Office Location */}
+                            <Card className="contact-card">
+                                <Card.Body>
+                                    <h5 className="section-title">Office Location</h5>
+                                    <div className="contact-item">
+                                        <FaMapMarkerAlt className="contact-icon" />
+                                        <div>
+                                            <h6>Head Office</h6>
+                                            <p>123, Farmers Street<br />Agriculture City<br />Pin: 123456</p>
+                                        </div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </div>
+                    </Col>
+
+                    {/* Contact Form */}
+                    <Col lg={8}>
+                        <Card className="form-card">
+                            <Card.Body>
+                                <h5 className="section-title mb-4">Send us a Message</h5>
+                                {submitted && (
+                                    <Alert variant="success" className="d-flex align-items-center">
+                                        <FaCheckCircle className="me-2" />
+                                        Thank you for your message. We'll get back to you soon!
+                                    </Alert>
+                                )}
+                                <Form onSubmit={handleSubmit}>
+                                    <Row>
+                                        <Col md={6}>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Your Name</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="name"
+                                                    value={formData.name}
+                                                    onChange={handleChange}
+                                                    placeholder="Enter your name"
+                                                    required
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                        <Col md={6}>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Email Address</Form.Label>
+                                                <Form.Control
+                                                    type="email"
+                                                    name="email"
+                                                    value={formData.email}
+                                                    onChange={handleChange}
+                                                    placeholder="Enter your email"
+                                                    required
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Subject</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="subject"
+                                            value={formData.subject}
+                                            onChange={handleChange}
+                                            placeholder="What is this regarding?"
+                                            required
+                                        />
+                                    </Form.Group>
+                                    <Form.Group className="mb-4">
+                                        <Form.Label>Message</Form.Label>
+                                        <Form.Control
+                                            as="textarea"
+                                            name="message"
+                                            value={formData.message}
+                                            onChange={handleChange}
+                                            rows={5}
+                                            placeholder="How can we help you?"
+                                            required
+                                        />
+                                    </Form.Group>
+                                    <div className="text-end">
+                                        <Button type="submit" className="submit-button">
+                                            Send Message
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+
+                {/* FAQ Section */}
+                <div className="faq-section mt-5">
+                    <h3 className="text-center mb-4">Frequently Asked Questions</h3>
+                    <Row className="g-4">
+                        <Col md={6}>
+                            <Card className="faq-card">
+                                <Card.Body>
+                                    <h6>How do I track my order?</h6>
+                                    <p>You can track your order by logging into your account and visiting the Orders section. There you'll find real-time updates on your order status.</p>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col md={6}>
+                            <Card className="faq-card">
+                                <Card.Body>
+                                    <h6>What payment methods do you accept?</h6>
+                                    <p>We accept various payment methods including credit/debit cards, UPI, net banking, and cash on delivery for your convenience.</p>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col md={6}>
+                            <Card className="faq-card">
+                                <Card.Body>
+                                    <h6>What is your return policy?</h6>
+                                    <p>We offer a 7-day return policy for most items. Products must be unused and in their original packaging to be eligible for return.</p>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col md={6}>
+                            <Card className="faq-card">
+                                <Card.Body>
+                                    <h6>How long does shipping take?</h6>
+                                    <p>Shipping typically takes 3-5 business days depending on your location. Express delivery options are available for select areas.</p>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </div>
+            </Container>
+        </motion.div>
     );
 }
 

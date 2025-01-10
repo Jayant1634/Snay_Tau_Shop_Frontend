@@ -11,6 +11,18 @@ export const updateProduct = (id, data) => axios.put(`${API_URL}/products/${id}`
 export const deleteProduct = (id) => axios.delete(`${API_URL}/products/${id}`);
 
 export const createOrder = (data) => axios.post(`${API_URL}/orders`, data);
-export const fetchMyOrders = () => axios.get(`${API_URL}/orders/myorders`);
-export const fetchAllOrders = () => axios.get(`${API_URL}/orders`);
-export const updateOrderStatus = (id, data) => axios.put(`${API_URL}/orders/${id}`, data);
+export const fetchMyOrders = () => axios.get(`${API_URL}/orders/myorders`, {
+    headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+});
+export const fetchAllOrders = () => axios.get(`${API_URL}/orders`, {
+    headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+});
+export const updateOrderStatus = (id, data) => axios.put(`${API_URL}/orders/${id}`, data, {
+    headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+});

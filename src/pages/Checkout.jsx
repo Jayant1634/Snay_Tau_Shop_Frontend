@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Card, ListGroup, Alert, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, ListGroup, Alert, Spinner, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { API_URL } from '../services/api';
+import axios from 'axios';
 import './Checkout.css';
 
 function Checkout() {
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [postalCode, setPostalCode] = useState('');
@@ -15,31 +17,29 @@ function Checkout() {
     const [loading, setLoading] = useState(false);
     const [cartItems, setCartItems] = useState([]);
     const [itemTotal, setItemTotal] = useState(0);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const shippingFee = 100;
 
     const navigate = useNavigate();
 
-    // 📦 Fetch Cart Items
+    // Fetch Cart Items
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) throw new Error('You must be logged in to proceed to checkout');
 
-                const response = await fetch(`${API_URL}/cart`, {
+                const response = await axios.get(`${API_URL}/cart`, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
 
-                if (!response.ok) throw new Error('Failed to fetch cart items');
-
-                const data = await response.json();
-                setCartItems(data);
-
-                const total = data.reduce((acc, item) => acc + (item.product?.price || 0) * item.qty, 0);
-                setItemTotal(total);
+                if (response.data) {
+                    setCartItems(response.data);
+                    const total = response.data.reduce((acc, item) => acc + (item.product?.price || 0) * item.qty, 0);
+                    setItemTotal(total);
+                }
             } catch (err) {
                 setError(err.message || 'Failed to fetch cart items');
             }
@@ -48,9 +48,9 @@ function Checkout() {
         fetchCartItems();
     }, []);
 
-    // 🛒 Handle Place Order
+    // Handle Place Order
     const handlePlaceOrder = async () => {
-        setError(null); // Reset error before proceeding
+        setError(null);
 
         if (!name || !address || !city || !postalCode || !country) {
             setError('Please fill in all required fields');
@@ -62,41 +62,48 @@ function Checkout() {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('You must be logged in to place an order');
 
-            const response = await fetch(`${API_URL}/orders`, {
-                method: 'POST',
+            const response = await axios.post(`${API_URL}/orders`, {
+                name,
+                email,
+                address,
+                city,
+                postalCode,
+                country,
+                paymentMethod: 'Cash on Delivery',
+                items: cartItems.map(item => ({
+                    product: item.product._id,
+                    qty: item.qty,
+                })),
+                totalPrice: itemTotal + shippingFee,
+                shippingFee,
+            }, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    name,
-                    address,
-                    city,
-                    postalCode,
-                    country,
-                    paymentMethod: 'Cash on Delivery',
-                    items: cartItems.map(item => ({
-                        product: item.product._id,
-                        qty: item.qty,
-                    })),
-                    totalAmount: itemTotal + shippingFee,
-                    shippingFee,
-                }),
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
-            if (!response.ok) throw new Error('Failed to place order');
+            if (response.data) {
+                // Clear cart in backend
+                await axios.delete(`${API_URL}/cart/clear`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
 
-            // Clear cart after successful order
-            await fetch(`${API_URL}/cart/clear`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
+                // Clear cart state locally
+                setCartItems([]);
+                setItemTotal(0);
 
-            navigate('/order-success');
+                // Show success modal
+                setShowSuccessModal(true);
+
+                // Redirect after 3 seconds
+                setTimeout(() => {
+                    navigate('/orders');
+                }, 3000);
+            }
         } catch (err) {
-            setError(err.message || 'Failed to place order');
+            setError(err.response?.data?.message || 'Failed to place order');
         } finally {
             setLoading(false);
         }
@@ -123,6 +130,18 @@ function Checkout() {
                                             placeholder="Enter your full name"
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
+                                            required
+                                        />
+                                    </Form.Group>
+
+                                    <Form.Group controlId="email" className="mb-3">
+                                        <Form.Label>Email</Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            placeholder="Enter your email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
                                         />
                                     </Form.Group>
 
@@ -133,6 +152,7 @@ function Checkout() {
                                             placeholder="Enter your address"
                                             value={address}
                                             onChange={(e) => setAddress(e.target.value)}
+                                            required
                                         />
                                     </Form.Group>
 
@@ -145,6 +165,7 @@ function Checkout() {
                                                     placeholder="Enter your city"
                                                     value={city}
                                                     onChange={(e) => setCity(e.target.value)}
+                                                    required
                                                 />
                                             </Form.Group>
                                         </Col>
@@ -156,6 +177,7 @@ function Checkout() {
                                                     placeholder="Enter postal code"
                                                     value={postalCode}
                                                     onChange={(e) => setPostalCode(e.target.value)}
+                                                    required
                                                 />
                                             </Form.Group>
                                         </Col>
@@ -168,6 +190,7 @@ function Checkout() {
                                             placeholder="Enter your country"
                                             value={country}
                                             onChange={(e) => setCountry(e.target.value)}
+                                            required
                                         />
                                     </Form.Group>
                                 </Form>
@@ -198,7 +221,20 @@ function Checkout() {
                                         onClick={handlePlaceOrder}
                                         disabled={loading}
                                     >
-                                        {loading ? <Spinner animation="border" size="sm" /> : 'Place Order'}
+                                        {loading ? (
+                                            <>
+                                                <Spinner
+                                                    as="span"
+                                                    animation="border"
+                                                    size="sm"
+                                                    role="status"
+                                                    className="me-2"
+                                                />
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            'Place Order'
+                                        )}
                                     </Button>
                                 </ListGroup.Item>
                             </ListGroup>
@@ -207,7 +243,28 @@ function Checkout() {
                 </Row>
             </Container>
 
-            {/* Footer */}
+            {/* Success Modal */}
+            <Modal 
+                show={showSuccessModal} 
+                centered
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header className="border-0">
+                    <Modal.Title className="w-100 text-center">
+                        <span className="display-6">🎉</span>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center py-4">
+                    <h4>Order Placed Successfully!</h4>
+                    <p className="mb-0">Thank you for your order.</p>
+                    <p className="text-muted">Redirecting to orders page...</p>
+                    <div className="mt-3">
+                        <Spinner animation="border" variant="primary" size="sm" />
+                    </div>
+                </Modal.Body>
+            </Modal>
+
             <Footer />
         </>
     );

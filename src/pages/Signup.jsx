@@ -1,5 +1,6 @@
 // src/pages/Signup.jsx
 
+import './Auth.css';
 import { useState, useContext } from 'react';
 import { Container, Form, Button, Alert, Row, Col } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
@@ -14,8 +15,6 @@ function Signup() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('user');
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -30,7 +29,7 @@ function Signup() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, email, password, role }),
+                body: JSON.stringify({ name, email, password }),
             });
 
             if (!response.ok) {
@@ -56,75 +55,58 @@ function Signup() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
+            className="auth-container"
         >
-            <Container className="my-5">
-                <Row className="justify-content-md-center">
-                    <Col xs={12} md={6}>
-                        <h2 className="mb-4 text-center">Sign Up</h2>
-                        {error && <Alert variant="danger">{error}</Alert>}
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="name" className="mb-3">
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter your name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
+            <Container>
+                <Row className="justify-content-center">
+                    <Col md={6}>
+                        <div className="auth-box">
+                            <h3 className="auth-title">Create Account</h3>
+                            {error && <Alert variant="danger" className="auth-alert">{error}</Alert>}
+                            
+                            <Form onSubmit={handleSubmit}>
+                                <Form.Group controlId="name" className="mb-3">
+                                    <Form.Label>Name</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
 
-                            <Form.Group controlId="email" className="mb-3">
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    placeholder="Enter email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
+                                <Form.Group controlId="email" className="mb-3">
+                                    <Form.Label>Email Address</Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        placeholder="Enter email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
 
-                            <Form.Group controlId="password" className="mb-3">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Enter password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
+                                <Form.Group controlId="password" className="mb-3">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Enter password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
 
-                            <Form.Group controlId="role" className="mb-3">
-                                <Form.Label>Role</Form.Label>
-                                <Form.Check
-                                    type="radio"
-                                    label="User"
-                                    name="role"
-                                    value="user"
-                                    checked={role === 'user'}
-                                    onChange={(e) => setRole(e.target.value)}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Admin"
-                                    name="role"
-                                    value="admin"
-                                    checked={role === 'admin'}
-                                    onChange={(e) => setRole(e.target.value)}
-                                />
-                            </Form.Group>
+                                <Button className="auth-btn w-100" type="submit" disabled={loading}>
+                                    {loading ? 'Creating Account...' : 'Sign Up'}
+                                </Button>
+                            </Form>
 
-                            <Button variant="success" type="submit" disabled={loading} className="w-100">
-                                {loading ? 'Signing up...' : 'Sign Up'}
-                            </Button>
-                        </Form>
-                        <Row className="py-3">
-                            <Col>
-                                Already have an account? <Link to="/login">Login</Link>
-                            </Col>
-                        </Row>
+                            <p className="redirect-text">
+                                Already have an account? <Link to="/login" className="auth-link">Login</Link>
+                            </p>
+                        </div>
                     </Col>
                 </Row>
             </Container>

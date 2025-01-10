@@ -1,0 +1,250 @@
+.orders-container {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.orders-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.orders-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, #9b59b6, #3498db);
+}
+
+.orders-table {
+    background: white;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.orders-table thead {
+    background: #34495e;
+    color: white;
+}
+
+.orders-table th {
+    font-weight: 500;
+    padding: 1rem !important;
+}
+
+.orders-table td {
+    vertical-align: middle;
+    padding: 1rem !important;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.status-delivered {
+    background-color: #2ecc71 !important;
+}
+
+.status-processing {
+    background-color: #f1c40f !important;
+}
+
+.status-shipped {
+    background-color: #3498db !important;
+}
+
+.status-cancelled {
+    background-color: #e74c3c !important;
+}
+
+.status-pending {
+    background-color: #95a5a6 !important;
+}
+
+.details-btn {
+    background: #9b59b6 !important;
+    border: none !important;
+    padding: 0.4rem 1.2rem !important;
+    border-radius: 20px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 10px rgba(155, 89, 182, 0.3) !important;
+}
+
+.details-btn:hover {
+    background: #8e44ad !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4) !important;
+}
+
+.details-btn i {
+    margin-right: 0.5rem;
+}
+
+.empty-orders {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.empty-orders a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.empty-orders a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.loading-spinner {
+    color: #3498db;
+}
+
+/* Modal Styling */
+.order-modal .modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.order-modal .modal-header {
+    background: linear-gradient(135deg, #9b59b6, #3498db);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+}
+
+.order-modal .modal-title {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.order-modal .close {
+    color: white;
+}
+
+.order-info-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.order-info-section h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.order-info-section p {
+    margin-bottom: 0.8rem;
+    color: #34495e;
+}
+
+.order-info-section strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.order-items-list {
+    margin: 1.5rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.order-items-list .list-group-item {
+    padding: 1.2rem;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.order-items-list .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.order-items-list .list-group-item:hover {
+    background: #f8f9fa;
+}
+
+.order-item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.order-total {
+    background: linear-gradient(135deg, #9b59b6, #3498db);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 1.5rem;
+}
+
+.order-total p {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.order-total h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .orders-table {
+        font-size: 0.9rem;
+    }
+
+    .status-badge {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.7rem;
+    }
+
+    .details-btn {
+        padding: 0.3rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .order-modal .modal-body {
+        padding: 1rem;
+    }
+
+    .order-info-section {
+        padding: 1rem;
+    }
+
+    .order-item-image {
+        width: 50px;
+        height: 50px;
+    }
+
+    .order-items-list .list-group-item {
+        padding: 0.8rem;
+    }
+} 

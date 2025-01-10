@@ -15,6 +15,9 @@ function AppNavbar() {
         navigate('/login');
     };
 
+    // Check if user is admin
+    const isAdmin = user?.role === 'admin';
+
     return (
         <motion.nav
             initial={{ opacity: 1, y: 0 }}
@@ -58,14 +61,39 @@ function AppNavbar() {
                                     <Nav.Link as={NavLink} to="/orders" className="nav-link-item">
                                         Orders
                                     </Nav.Link>
-                                    <Nav.Link as={NavLink} to="/wishlist" className="nav-link-item">
-                                        Wishlist
-                                    </Nav.Link>
                                     <Nav.Link as={NavLink} to="/support" className="nav-link-item">
                                         Support
                                     </Nav.Link>
                                 </>
                             )}
+
+                            {/* Admin Space */}
+                            {isAdmin && (
+                                <NavDropdown 
+                                    title={
+                                        <span className="fw-medium text-primary">
+                                            👑 Admin Space
+                                        </span>
+                                    }
+                                    id="admin-nav-dropdown"
+                                    className="mx-2"
+                                >
+                                    <NavDropdown.Item as={NavLink} to="/admin/dashboard">
+                                        Dashboard
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item as={NavLink} to="/admin/products">
+                                        Manage Products
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item as={NavLink} to="/admin/orders">
+                                        Manage Orders
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item as={NavLink} to="/admin/users">
+                                        Manage Users
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
+
+                            
 
                             {!isAuthenticated ? (
                                 <>
@@ -97,21 +125,6 @@ function AppNavbar() {
                                     align="end"
                                     className="mx-2"
                                 >
-
-                                    {user?.role === 'admin' && (
-                                        <>
-                                            <NavDropdown.Item as={NavLink} to="/admin/products">
-                                                Manage Products
-                                            </NavDropdown.Item>
-                                            <NavDropdown.Item as={NavLink} to="/admin/orders">
-                                                Manage Orders
-                                            </NavDropdown.Item>
-                                            {/* <NavDropdown.Item as={NavLink} to="/admin/dashboard">
-                                                Admin Dashboard
-                                            </NavDropdown.Item> */}
-                                            <NavDropdown.Divider />
-                                        </>
-                                    )}
                                     <NavDropdown.Item
                                         as="button"
                                         onClick={handleLogout}
