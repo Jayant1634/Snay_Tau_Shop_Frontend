@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Card, ListGroup, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, ListGroup, Alert, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { API_URL } from '../services/api';
@@ -11,12 +11,11 @@ function Checkout() {
     const [city, setCity] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [country, setCountry] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('Credit Card');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [cartItems, setCartItems] = useState([]); // Store cart items
-    const [itemTotal, setItemTotal] = useState(0); // Store total price of items
-    const shippingFee = 100; // Fixed shipping fee
+    const [cartItems, setCartItems] = useState([]);
+    const [itemTotal, setItemTotal] = useState(0);
+    const shippingFee = 100;
 
     const navigate = useNavigate();
 
@@ -25,9 +24,7 @@ function Checkout() {
         const fetchCartItems = async () => {
             try {
                 const token = localStorage.getItem('token');
-                if (!token) {
-                    throw new Error('You must be logged in to proceed to checkout');
-                }
+                if (!token) throw new Error('You must be logged in to proceed to checkout');
 
                 const response = await fetch(`${API_URL}/cart`, {
                     headers: {
@@ -36,14 +33,11 @@ function Checkout() {
                     },
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch cart items');
-                }
+                if (!response.ok) throw new Error('Failed to fetch cart items');
 
                 const data = await response.json();
                 setCartItems(data);
 
-                // Calculate the total price of all cart items
                 const total = data.reduce((acc, item) => acc + (item.product?.price || 0) * item.qty, 0);
                 setItemTotal(total);
             } catch (err) {
@@ -56,7 +50,9 @@ function Checkout() {
 
     // 🛒 Handle Place Order
     const handlePlaceOrder = async () => {
-        if (!name || !address || !city || !postalCode || !country || !paymentMethod) {
+        setError(null); // Reset error before proceeding
+
+        if (!name || !address || !city || !postalCode || !country) {
             setError('Please fill in all required fields');
             return;
         }
@@ -64,9 +60,7 @@ function Checkout() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('You must be logged in to place an order');
-            }
+            if (!token) throw new Error('You must be logged in to place an order');
 
             const response = await fetch(`${API_URL}/orders`, {
                 method: 'POST',
@@ -80,18 +74,26 @@ function Checkout() {
                     city,
                     postalCode,
                     country,
-                    paymentMethod,
-                    items: cartItems,
+                    paymentMethod: 'Cash on Delivery',
+                    items: cartItems.map(item => ({
+                        product: item.product._id,
+                        qty: item.qty,
+                    })),
                     totalAmount: itemTotal + shippingFee,
                     shippingFee,
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to place order');
-            }
+            if (!response.ok) throw new Error('Failed to place order');
 
-            alert('🎉 Order placed successfully!');
+            // Clear cart after successful order
+            await fetch(`${API_URL}/cart/clear`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
             navigate('/order-success');
         } catch (err) {
             setError(err.message || 'Failed to place order');
@@ -176,32 +178,7 @@ function Checkout() {
                         <Card className="mb-4 shadow-sm">
                             <Card.Header className="fw-bold">💳 Payment Method</Card.Header>
                             <Card.Body>
-                                <Form>
-                                    <Form.Check
-                                        type="radio"
-                                        label="Credit Card"
-                                        name="paymentMethod"
-                                        value="Credit Card"
-                                        checked={paymentMethod === 'Credit Card'}
-                                        onChange={(e) => setPaymentMethod(e.target.value)}
-                                    />
-                                    <Form.Check
-                                        type="radio"
-                                        label="Debit Card"
-                                        name="paymentMethod"
-                                        value="Debit Card"
-                                        checked={paymentMethod === 'Debit Card'}
-                                        onChange={(e) => setPaymentMethod(e.target.value)}
-                                    />
-                                    <Form.Check
-                                        type="radio"
-                                        label="PayPal"
-                                        name="paymentMethod"
-                                        value="PayPal"
-                                        checked={paymentMethod === 'PayPal'}
-                                        onChange={(e) => setPaymentMethod(e.target.value)}
-                                    />
-                                </Form>
+                                <Alert variant="info">Payment method is set to <strong>Cash on Delivery</strong>.</Alert>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -221,7 +198,7 @@ function Checkout() {
                                         onClick={handlePlaceOrder}
                                         disabled={loading}
                                     >
-                                        {loading ? 'Placing Order...' : 'Place Order'}
+                                        {loading ? <Spinner animation="border" size="sm" /> : 'Place Order'}
                                     </Button>
                                 </ListGroup.Item>
                             </ListGroup>

@@ -24,6 +24,9 @@ import AdminRoute from './components/AdminRoute';
 import Navbar from './components/Navbar';
 import PropTypes from 'prop-types';
 
+
+
+
 /* 🛡️ Error Boundary Component */
 function ErrorBoundary({ children }) {
     return (
@@ -75,7 +78,6 @@ function App() {
             <Router>
                 {/* Navbar */}
                 <Navbar />
-
                 {/* Spacer to prevent content overlap */}
                 <div className="navbar-spacer"></div>
 

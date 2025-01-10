@@ -5,6 +5,7 @@ import { Container, Table, Alert, Spinner, Badge, Button } from 'react-bootstrap
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
+import { API_URL } from '../services/api';
 
 function Orders() {
     const { user } = useContext(AuthContext);
@@ -16,21 +17,26 @@ function Orders() {
     useEffect(() => {
         const fetchUserOrders = async () => {
             try {
-                // Replace with your actual API endpoint
-                const response = await fetch(`/api/orders/user/${user._id}`, {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+
+                const response = await fetch(`${API_URL}/orders/myorders`, {
                     headers: {
                         'Content-Type': 'application/json',
-                        // Include authorization headers if required
+                        'Authorization': `Bearer ${token}`
                     },
                 });
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch orders');
                 }
                 const data = await response.json();
                 setOrders(data);
-                setLoading(false);
             } catch (err) {
                 setError(err.message);
+            } finally {
                 setLoading(false);
             }
         };
@@ -66,11 +72,10 @@ function Orders() {
                     <Table striped bordered hover responsive>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Order ID</th>
                                 <th>Date</th>
                                 <th>Total</th>
-                                <th>Paid</th>
-                                <th>Delivered</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -81,18 +86,14 @@ function Orders() {
                                     <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                                     <td>₹{order.totalPrice.toFixed(2)}</td>
                                     <td>
-                                        {order.isPaid ? (
-                                            <Badge bg="success">Yes</Badge>
-                                        ) : (
-                                            <Badge bg="danger">No</Badge>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {order.isDelivered ? (
-                                            <Badge bg="success">Yes</Badge>
-                                        ) : (
-                                            <Badge bg="danger">No</Badge>
-                                        )}
+                                        <Badge bg={
+                                            order.status === 'Delivered' ? 'success' :
+                                            order.status === 'Shipped' ? 'info' :
+                                            order.status === 'Processing' ? 'warning' :
+                                            order.status === 'Cancelled' ? 'danger' : 'secondary'
+                                        }>
+                                            {order.status}
+                                        </Badge>
                                     </td>
                                     <td>
                                         <Link to={`/orders/${order._id}`}>

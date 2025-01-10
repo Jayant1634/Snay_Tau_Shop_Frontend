@@ -34,7 +34,7 @@ function AppNavbar() {
                         className="navbar-brand fw-bold d-flex align-items-center"
                     >
                         <span role="img" aria-label="logo" className="me-2">🚜</span>
-                        Kisaan Seva
+                        Kisaan Krishi Seva Kendra
                     </Navbar.Brand>
 
                     {/* Navbar Toggle */}
