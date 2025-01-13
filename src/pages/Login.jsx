@@ -101,7 +101,7 @@ function Login() {
                             </Form>
 
                             <p className="redirect-text">
-                                Don't have an account?{' '}
+                                Don{'&apos'}t have an account?{' '}
                                 <a href="/signup" className="auth-link">
                                     Sign Up
                                 </a>

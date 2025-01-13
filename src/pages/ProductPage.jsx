@@ -1,29 +1,26 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Container, Row, Col, Image, ListGroup, Button, Spinner, Alert, Form } from "react-bootstrap";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Container, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
+import { FiShoppingBag, FiArrowLeft } from "react-icons/fi";
 import { API_URL } from "../services/api";
-import Footer from "../components/Footer";
 import "./ProductPage.css";
 
 function ProductPage() {
-    const { id } = useParams();
-    const [product, setProduct] = useState({});
+    const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [addingToCart, setAddingToCart] = useState(false);
     const [qty, setQty] = useState(1);
     const [selectedSize, setSelectedSize] = useState('');
-    const [addingToCart, setAddingToCart] = useState(false);
-    // const [selectedQty, setSelectedQty] = useState(1);
-    
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-    // 📦 Fetch Product Details
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const response = await fetch(`${API_URL}/products/${id}`);
                 if (!response.ok) {
-                    throw new Error("Failed to fetch product details");
+                    throw new Error("Product not found");
                 }
                 const data = await response.json();
                 setProduct(data);
@@ -40,7 +37,6 @@ function ProductPage() {
         fetchProduct();
     }, [id]);
 
-    // 🛒 Handle Add to Cart
     const handleAddToCart = async () => {
         try {
             if (!selectedSize && product.sizes?.length > 0) {
@@ -80,143 +76,129 @@ function ProductPage() {
         }
     };
 
-    //🔄 Loading State
     if (loading) {
         return (
-            <div className="product-loading-container">
-                <Spinner animation="border" variant="primary" />
+            <div className="loading-container">
+                <Spinner animation="border" role="status" />
+                <span>Loading product details...</span>
             </div>
         );
     }
 
-    // ❌ Error State
     if (error) {
         return (
-            <Container className="error-container">
-                <Alert variant="danger">{error}</Alert>
-                <Link to="/products" className="btn btn-primary mt-3">
-                    Go Back to Products
-                </Link>
-            </Container>
+            <div className="error-container">
+                <Alert variant="danger">
+                    {error}
+                    <Button 
+                        variant="link" 
+                        className="d-block mt-3"
+                        onClick={() => navigate('/products')}
+                    >
+                        <FiArrowLeft /> Back to Products
+                    </Button>
+                </Alert>
+            </div>
         );
     }
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-            <Container className="product-page-container">
-                {/* Back Button */}
-                <Button variant="outline-primary" className="mb-4" as={Link} to="/products">
-                    ← Back to Products
+        <div className="product-page">
+            <Container>
+                <Button
+                    variant="link"
+                    className="back-button"
+                    onClick={() => navigate('/products')}
+                >
+                    <FiArrowLeft /> Back to Products
                 </Button>
 
-                {/* Product Details */}
-                <Row className="product-content">
-                    {/* Product Image Section */}
-                    <Col md={6} className="product-image-section">
-                        <div className="product-image-wrapper">
-                            <Image
-                                src={product.image || "/assets/product-placeholder.jpg"}
-                                alt={product.name || "Product Image"}
-                                fluid
-                                className="product-image"
-                            />
-                        </div>
-                    </Col>
+                <div className="product-content">
+                    <Row>
+                        <Col md={6} className="product-image-section">
+                            <div className="product-image-wrapper">
+                                <img
+                                    src={product.image || "/assets/product-placeholder.jpg"}
+                                    alt={product.name}
+                                    className="product-image"
+                                />
+                            </div>
+                        </Col>
 
-                    {/* Product Info Section */}
-                    <Col md={6}>
-                        <div className="product-details-box">
-                            <ListGroup variant="flush">
-                                <ListGroup.Item>
-                                    <h2 className="product-title">{product.name || "Product Name"}</h2>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                    <p className="product-price"> 💵  Price: <strong>₹{product.price?.toFixed(2) || "N/A"}</strong></p>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                    <p className="product-category">🏷️ Category: {product.category || "Uncategorized"}</p>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                    <p className="product-description">
-                                        📝 {product.description?.slice(0, 120) || "No description available"}...
-                                    </p>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                    <p className="product-status">
-                                        {product.stock > 0 ? "✅ In Stock" : "❌ Out of Stock"}
-                                    </p>
-                                </ListGroup.Item>
+                        <Col md={6} className="product-details">
+                            <div className="product-info">
+                                <h1 className="product-title">{product.name}</h1>
+                                <div className="product-meta">
+                                    <span className="product-category">{product.category}</span>
+                                    <span className="product-price">₹{product.price?.toFixed(2)}</span>
+                                </div>
+                                <p className="product-description">{product.description}</p>
+                                
+                                <div className="product-actions">
+                                    {product.sizes && product.sizes.length > 0 && (
+                                        <div className="size-selector">
+                                            <label>Size:</label>
+                                            <select 
+                                                value={selectedSize} 
+                                                onChange={(e) => setSelectedSize(e.target.value)}
+                                                disabled={product.stock === 0}
+                                            >
+                                                {product.sizes.map((size, index) => (
+                                                    <option key={index} value={size}>
+                                                        {size}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
 
-                                {/* Size Selector */}
-                                {product.sizes && product.sizes.length > 0 && (
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col xs={6}>Size:</Col>
-                                            <Col xs={6}>
-                                                <Form.Control
-                                                    as="select"
-                                                    value={selectedSize}
-                                                    onChange={(e) => setSelectedSize(e.target.value)}
-                                                    className="size-selector"
-                                                >
-                                                    {product.sizes.map((sizeObj, index) => (
-                                                        <option key={index} value={sizeObj.size}>
-                                                            {sizeObj.size} ({sizeObj.stock} available)
-                                                        </option>
-                                                    ))}
-                                                </Form.Control>
-                                            </Col>
-                                        </Row>
-                                    </ListGroup.Item>
-                                )}
+                                    <div className="quantity-selector">
+                                        <label>Quantity:</label>
+                                        <select 
+                                            value={qty} 
+                                            onChange={(e) => setQty(Number(e.target.value))}
+                                            disabled={product.stock === 0}
+                                        >
+                                            {[...Array(Math.min(10, product.stock || 0))].map((_, i) => (
+                                                <option key={i + 1} value={i + 1}>
+                                                    {i + 1}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
 
-                                {/* Quantity Selector */}
-                                {product.sizes && selectedSize && (
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col xs={6}>Quantity:</Col>
-                                            <Col xs={6}>
-                                                <Form.Control
-                                                    as="select"
-                                                    value={qty}
-                                                    onChange={(e) => setQty(Number(e.target.value))}
-                                                    className="quantity-selector"
-                                                >
-                                                    {[...Array(Math.min(10, product.sizes.find(s => s.size === selectedSize)?.stock || 0))].map((_, index) => (
-                                                        <option key={index + 1} value={index + 1}>
-                                                            {index + 1}
-                                                        </option>
-                                                    ))}
-                                                </Form.Control>
-                                            </Col>
-                                        </Row>
-                                    </ListGroup.Item>
-                                )}
+                                    <div className="stock-status">
+                                        {product.stock > 0 ? (
+                                            <span className="in-stock">In Stock ({product.stock} available)</span>
+                                        ) : (
+                                            <span className="out-of-stock">Out of Stock</span>
+                                        )}
+                                    </div>
 
-                                {/* Add to Cart Button */}
-                                <ListGroup.Item>
-                                    <Button
+                                    <Button 
                                         className="add-to-cart-btn"
-                                        variant="success"
                                         disabled={product.stock === 0 || addingToCart}
                                         onClick={handleAddToCart}
                                     >
                                         {addingToCart ? (
-                                            <Spinner animation="border" size="sm" />
+                                            <>
+                                                <Spinner animation="border" size="sm" />
+                                                <span>Adding to Cart...</span>
+                                            </>
                                         ) : (
-                                            "Add To Cart"
+                                            <>
+                                                <FiShoppingBag size={18} />
+                                                <span>Add to Cart</span>
+                                            </>
                                         )}
                                     </Button>
-                                </ListGroup.Item>
-                            </ListGroup>
-                        </div>
-                    </Col>
-                </Row>
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
             </Container>
-
-            {/* Footer */}
-            <Footer />
-        </motion.div>
+        </div>
     );
 }
 
