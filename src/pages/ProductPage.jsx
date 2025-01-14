@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiShoppingBag, FiArrowLeft } from "react-icons/fi";
+import { FiShoppingBag, FiArrowLeft, FiMaximize2 } from "react-icons/fi";
 import { API_URL } from "../services/api";
 import "./ProductPage.css";
 
@@ -12,6 +12,7 @@ function ProductPage() {
     const [addingToCart, setAddingToCart] = useState(false);
     const [qty, setQty] = useState(1);
     const [selectedSize, setSelectedSize] = useState('');
+    const [showZoom, setShowZoom] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -106,8 +107,8 @@ function ProductPage() {
         <div className="product-page">
             <Container>
                 <Button
-                    variant="link"
-                    className="back-button"
+                    variant="primary"
+                    className="back-button mb-4"
                     onClick={() => navigate('/products')}
                 >
                     <FiArrowLeft /> Back to Products
@@ -116,12 +117,18 @@ function ProductPage() {
                 <div className="product-content">
                     <Row>
                         <Col md={6} className="product-image-section">
-                            <div className="product-image-wrapper">
+                            <div 
+                                className="product-image-wrapper"
+                                onClick={() => setShowZoom(true)}
+                            >
                                 <img
                                     src={product.image || "/assets/product-placeholder.jpg"}
                                     alt={product.name}
                                     className="product-image"
                                 />
+                                <div className="zoom-icon">
+                                    <FiMaximize2 size={24} />
+                                </div>
                             </div>
                         </Col>
 
@@ -135,41 +142,43 @@ function ProductPage() {
                                 <p className="product-description">{product.description}</p>
                                 
                                 <div className="product-actions">
-                                    {product.sizes && product.sizes.length > 0 && (
-                                        <div className="size-selector">
-                                            <label>Size:</label>
+                                    <div className="selectors-container">
+                                        {product.sizes && product.sizes.length > 0 && (
+                                            <div className="size-selector">
+                                                <select 
+                                                    value={selectedSize} 
+                                                    onChange={(e) => setSelectedSize(e.target.value)}
+                                                    disabled={product.stock === 0}
+                                                >
+                                                    <option value="" disabled>Size</option>
+                                                    {product.sizes.map((size, index) => (
+                                                        <option key={index} value={size}>
+                                                            {size}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        )}
+
+                                        <div className="quantity-selector">
                                             <select 
-                                                value={selectedSize} 
-                                                onChange={(e) => setSelectedSize(e.target.value)}
+                                                value={qty} 
+                                                onChange={(e) => setQty(Number(e.target.value))}
                                                 disabled={product.stock === 0}
                                             >
-                                                {product.sizes.map((size, index) => (
-                                                    <option key={index} value={size}>
-                                                        {size}
+                                                <option value="" disabled>Qty</option>
+                                                {[...Array(Math.min(10, product.stock || 0))].map((_, i) => (
+                                                    <option key={i + 1} value={i + 1}>
+                                                        {i + 1}
                                                     </option>
                                                 ))}
                                             </select>
                                         </div>
-                                    )}
-
-                                    <div className="quantity-selector">
-                                        <label>Quantity:</label>
-                                        <select 
-                                            value={qty} 
-                                            onChange={(e) => setQty(Number(e.target.value))}
-                                            disabled={product.stock === 0}
-                                        >
-                                            {[...Array(Math.min(10, product.stock || 0))].map((_, i) => (
-                                                <option key={i + 1} value={i + 1}>
-                                                    {i + 1}
-                                                </option>
-                                            ))}
-                                        </select>
                                     </div>
 
                                     <div className="stock-status">
                                         {product.stock > 0 ? (
-                                            <span className="in-stock">In Stock ({product.stock} available)</span>
+                                            <span className="in-stock">In Stock ({product.stock})</span>
                                         ) : (
                                             <span className="out-of-stock">Out of Stock</span>
                                         )}
@@ -183,12 +192,12 @@ function ProductPage() {
                                         {addingToCart ? (
                                             <>
                                                 <Spinner animation="border" size="sm" />
-                                                <span>Adding to Cart...</span>
+                                                Adding...
                                             </>
                                         ) : (
                                             <>
-                                                <FiShoppingBag size={18} />
-                                                <span>Add to Cart</span>
+                                                <FiShoppingBag />
+                                                Add to Cart
                                             </>
                                         )}
                                     </Button>
@@ -198,6 +207,17 @@ function ProductPage() {
                     </Row>
                 </div>
             </Container>
+
+            <div 
+                className={`image-zoom-modal ${showZoom ? 'show' : ''}`}
+                onClick={() => setShowZoom(false)}
+            >
+                <img
+                    src={product.image || "/assets/product-placeholder.jpg"}
+                    alt={product.name}
+                    className="zoomed-image"
+                />
+            </div>
         </div>
     );
 }
