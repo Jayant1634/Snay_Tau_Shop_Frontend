@@ -274,34 +274,36 @@
     padding-top: 0.75rem;
     border-top: 1px solid #EFF3EA;
     min-height: 50px;
+    gap: 0.5rem;
 }
 
 .product-price {
+    flex: 1;
     font-size: 1.1rem;
     font-weight: 600;
     color: #D9DFC6;
     margin-left: 0.5rem;
+    white-space: nowrap;
 }
 
-/* Cart Button */
-.add-to-cart-btn {
-    width: 34px !important;
-    height: 34px !important;
+/* Product Footer Cart Button */
+.product-footer .add-to-cart-btn {
+    min-width: 32px !important;
+    width: 32px !important;
+    height: 32px !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
     background-color: #D9DFC6 !important;
     border: none !important;
     transition: all 0.2s ease !important;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
 }
 
-.add-to-cart-btn:hover {
-    background-color: #EFF3EA !important;
-}
-
-.add-to-cart-btn svg {
+.product-footer .add-to-cart-btn svg {
     width: 16px;
     height: 16px;
     color: #FFFDF0;
@@ -313,8 +315,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 34px !important;
-    height: 34px !important;
+    width: 38px !important;
+    height: 38px !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -338,8 +340,8 @@
 }
 
 .view-details-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     color: #D9DFC6;
 }
 

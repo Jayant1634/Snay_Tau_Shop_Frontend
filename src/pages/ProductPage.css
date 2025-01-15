@@ -202,28 +202,32 @@
     border: none !important;
     border-radius: 8px !important;
     transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     gap: 0.75rem;
     margin-top: 1rem;
     box-shadow: 0 2px 8px rgba(33, 53, 85, 0.15);
 }
 
-.add-to-cart-btn span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.add-to-cart-btn svg {
-    width: 18px;
-    height: 18px;
-}
-
+/* Loading state alignment */
 .add-to-cart-btn .spinner-border {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+}
+
+/* Icon and text alignment */
+.add-to-cart-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Remove any extra spans or wrappers */
+.add-to-cart-btn > * {
+    margin: 0;
+    padding: 0;
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
