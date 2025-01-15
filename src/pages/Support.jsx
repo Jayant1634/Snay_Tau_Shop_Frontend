@@ -59,14 +59,14 @@ function Support() {
                                         <FaPhone className="contact-icon" />
                                         <div>
                                             <h6>Call Us</h6>
-                                            <p>+91-9876543210</p>
+                                            <p>+91-9828582401</p>
                                         </div>
                                     </div>
                                     <div className="contact-item">
                                         <FaWhatsapp className="contact-icon" />
                                         <div>
                                             <h6>WhatsApp</h6>
-                                            <p>+91-9876543210</p>
+                                            <p>+91-9828582401</p>
                                         </div>
                                     </div>
                                 </Card.Body>

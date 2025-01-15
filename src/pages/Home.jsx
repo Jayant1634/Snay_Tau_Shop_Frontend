@@ -39,15 +39,15 @@ function Home() {
                                 transition={{ duration: 0.8 }}
                                 className="owner-info p-4 shadow rounded-4"
                             >
-                                <h4 className="fw-bold mb-3 text-primary">👤 Rajesh Kumar</h4>
+                                <h4 className="fw-bold mb-3 text-primary">👤 Rajesh Khandelwal</h4>
                                 <p>
-                                    With over 15 years of experience in the agricultural sector, Rajesh Kumar is dedicated to providing high-quality farming products and exceptional service.
+                                    With over 15 years of experience in the agricultural sector, Rajesh Khandelwal is dedicated to providing high-quality farming products and exceptional service.
                                 </p>
                                 <p>
-                                    <strong>Contact:</strong> +91 98765 43210
+                                    <strong>Contact:</strong> +91 98285 82401
                                 </p>
                                 <p>
-                                    <strong>Email:</strong> rajesh.kumar@example.com
+                                    <strong>Email:</strong> rajesh.Khandelwal@example.com
                                 </p>
                             </motion.div>
                         </Col>
