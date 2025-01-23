@@ -36,7 +36,9 @@ function AppNavbar() {
                         to="/"
                         className="navbar-brand fw-bold d-flex align-items-center"
                     >
-                        <span role="img" aria-label="logo" className="me-2">🚜</span>
+                        <span role="img" aria-label="logo" className="brand-emoji me-2">
+                            🚜
+                        </span>
                         Kisaan Krishi Seva Kendra
                     </Navbar.Brand>
 

@@ -22,6 +22,8 @@ import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import Navbar from './components/Navbar';
 import PropTypes from 'prop-types';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 
 
@@ -90,6 +92,9 @@ function App() {
                             <Route path="/support" element={<Support />} />
                             <Route path="/products/:id" element={<ProductPage />}/>
                             <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/about" element={<About />}/>
+                            <Route path="/contact" element={<Contact />}/>
+
 
                             {/* Private Routes */}
                             <Route
