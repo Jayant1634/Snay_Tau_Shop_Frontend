@@ -1,28 +1,46 @@
 .auth-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #6c5ce7, #a8e6cf);
-    padding: 2rem 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+    padding: 1rem 0;
+    overflow: hidden;
+}
+
+.auth-animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    height: 100%;
+    max-height: 400px;
+}
+
+.lottie-animation {
+    width: 100%;
+    max-width: 450px;
+    min-width: 300px;
+    height: auto;
 }
 
 .auth-box {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 2.5rem !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    max-width: 500px;
-    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
 }
 
 .auth-title {
     color: #2c3e50;
     font-weight: 700;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.75rem;
     position: relative;
-    padding-bottom: 1rem;
+    padding-bottom: 0.75rem;
 }
 
 .auth-title::after {
@@ -43,10 +61,14 @@
     margin-bottom: 0.5rem;
 }
 
+.form-group {
+    margin-bottom: 1rem;
+}
+
 .form-control {
     border: 2px solid #e0e0e0;
     border-radius: 10px;
-    padding: 0.8rem 1rem;
+    padding: 0.6rem 1rem;
     transition: all 0.3s ease;
 }
 
@@ -58,12 +80,12 @@
 .auth-btn {
     background: linear-gradient(to right, #6c5ce7, #a8e6cf) !important;
     border: none !important;
-    padding: 0.8rem !important;
+    padding: 0.6rem !important;
     border-radius: 10px !important;
     font-weight: 600 !important;
     letter-spacing: 0.5px;
     transition: all 0.3s ease !important;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
 }
 
 .auth-btn:hover {
@@ -117,18 +139,126 @@
 
 .redirect-text {
     text-align: center;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     color: #2c3e50;
 }
 
+.auth-subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.password-hint {
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.auth-separator {
+    text-align: center;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.auth-separator::before,
+.auth-separator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 30px);
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.auth-separator::before {
+    left: 0;
+}
+
+.auth-separator::after {
+    right: 0;
+}
+
+.auth-separator span {
+    background-color: white;
+    padding: 0 15px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.signup-form .auth-input {
+    background-color: #f8f9fa;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.signup-form .auth-input:focus {
+    background-color: #fff;
+    border-color: #6c5ce7;
+    box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.15);
+}
+
+.signup-form .form-label {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+
+.signup-form .auth-box {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.auth-btn .spinner-border {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-right: 0.5rem;
+}
+
 /* Responsive adjustments */
+@media (max-width: 992px) {
+    .lottie-animation {
+        max-width: 400px;
+        min-width: 280px;
+    }
+    
+    .auth-animation {
+        max-height: 350px;
+    }
+}
+
 @media (max-width: 768px) {
+    .auth-container {
+        padding: 1rem;
+        height: auto;
+        min-height: 100vh;
+    }
+
     .auth-box {
-        margin: 1rem;
-        padding: 1.5rem !important;
+        padding: 1.5rem;
+        max-height: none;
+    }
+
+    .auth-animation {
+        max-height: 250px;
+        padding: 1rem;
+    }
+
+    .lottie-animation {
+        max-width: 300px;
+        min-width: 200px;
     }
 
     .auth-title {
         font-size: 1.75rem;
+    }
+
+    .auth-subtitle {
+        font-size: 1rem;
+    }
+    
+    .signup-form {
+        padding: 0 0.5rem;
     }
 } 

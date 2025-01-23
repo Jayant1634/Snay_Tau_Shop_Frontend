@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { API_URL } from '../services/api';
+import Lottie from 'lottie-react';
+import loginAnimation from '../assets/lottie/login.json';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -53,7 +55,16 @@ function Login() {
     return (
         <div className="auth-container">
             <Container>
-                <Row className="justify-content-center">
+                <Row className="justify-content-center align-items-center">
+                    <Col md={6} className="d-none d-md-block">
+                        <div className="auth-animation">
+                            <Lottie 
+                                animationData={loginAnimation}
+                                loop={true}
+                                className="lottie-animation"
+                            />
+                        </div>
+                    </Col>
                     <Col md={6}>
                         <div className="auth-box">
                             <h3 className="auth-title">Welcome Back</h3>

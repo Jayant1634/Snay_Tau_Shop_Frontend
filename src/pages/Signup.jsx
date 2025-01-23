@@ -7,6 +7,8 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { API_URL } from '../services/api';
+import Lottie from 'lottie-react';
+import signupAnimation from '../assets/lottie/signup.json';
 
 function Signup() {
     const { login } = useContext(AuthContext);
@@ -42,10 +44,11 @@ function Signup() {
                 throw new Error('Empty response from server');
             }
             const data = JSON.parse(text);
-            login(data.token); // Assuming the API returns a token
+            login(data.token);
             navigate('/');
         } catch (err) {
             setError(err.message);
+        } finally {
             setLoading(false);
         }
     };
@@ -58,21 +61,33 @@ function Signup() {
             className="auth-container"
         >
             <Container>
-                <Row className="justify-content-center">
+                <Row className="justify-content-center align-items-center">
+                    <Col md={6} className="d-none d-md-block">
+                        <div className="auth-animation">
+                            <Lottie 
+                                animationData={signupAnimation}
+                                loop={true}
+                                className="lottie-animation"
+                            />
+                        </div>
+                    </Col>
                     <Col md={6}>
                         <div className="auth-box">
                             <h3 className="auth-title">Create Account</h3>
+                            <p className="auth-subtitle">Join our community today!</p>
+                            
                             {error && <Alert variant="danger" className="auth-alert">{error}</Alert>}
                             
-                            <Form onSubmit={handleSubmit}>
+                            <Form onSubmit={handleSubmit} className="signup-form">
                                 <Form.Group controlId="name" className="mb-3">
-                                    <Form.Label>Name</Form.Label>
+                                    <Form.Label>Full Name</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter your name"
+                                        placeholder="Enter your full name"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         required
+                                        className="auth-input"
                                     />
                                 </Form.Group>
 
@@ -80,31 +95,54 @@ function Signup() {
                                     <Form.Label>Email Address</Form.Label>
                                     <Form.Control
                                         type="email"
-                                        placeholder="Enter email"
+                                        placeholder="Enter your email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
+                                        className="auth-input"
                                     />
                                 </Form.Group>
 
-                                <Form.Group controlId="password" className="mb-3">
+                                <Form.Group controlId="password" className="mb-4">
                                     <Form.Label>Password</Form.Label>
                                     <Form.Control
                                         type="password"
-                                        placeholder="Enter password"
+                                        placeholder="Create a strong password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
+                                        className="auth-input"
                                     />
+                                    <Form.Text className="password-hint">
+                                        Password must be at least 8 characters long
+                                    </Form.Text>
                                 </Form.Group>
 
-                                <Button className="auth-btn w-100" type="submit" disabled={loading}>
-                                    {loading ? 'Creating Account...' : 'Sign Up'}
+                                <Button 
+                                    className="auth-btn w-100" 
+                                    type="submit" 
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" />
+                                            Creating Account...
+                                        </>
+                                    ) : (
+                                        'Sign Up'
+                                    )}
                                 </Button>
                             </Form>
 
+                            <div className="auth-separator">
+                                <span>or</span>
+                            </div>
+
                             <p className="redirect-text">
-                                Already have an account? <Link to="/login" className="auth-link">Login</Link>
+                                Already have an account? {' '}
+                                <Link to="/login" className="auth-link">
+                                    Sign In
+                                </Link>
                             </p>
                         </div>
                     </Col>
