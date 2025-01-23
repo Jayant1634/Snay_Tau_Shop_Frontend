@@ -11,7 +11,7 @@ function ProductPage() {
     const [error, setError] = useState(null);
     const [addingToCart, setAddingToCart] = useState(false);
     const [qty, setQty] = useState(1);
-    const [selectedSize, setSelectedSize] = useState('');
+    const [selectedSize, setSelectedSize] = useState(null);
     const [showZoom, setShowZoom] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -25,8 +25,19 @@ function ProductPage() {
                 }
                 const data = await response.json();
                 setProduct(data);
-                if (data.sizes && data.sizes.length > 0) {
-                    setSelectedSize(data.sizes[0]);
+                
+                if (data?.sizes && Array.isArray(data.sizes)) {
+                    const validSizes = data.sizes.filter(size => 
+                        typeof size === 'string' || typeof size.size === 'string'
+                    );
+                    if (validSizes.length > 0) {
+                        setSelectedSize(typeof validSizes[0] === 'string' ? 
+                            validSizes[0] : validSizes[0].size);
+                    } else {
+                        setSelectedSize('Standard');
+                    }
+                } else {
+                    setSelectedSize('Standard');
                 }
             } catch (err) {
                 setError(err.message);
@@ -75,6 +86,21 @@ function ProductPage() {
         } finally {
             setAddingToCart(false);
         }
+    };
+
+    const renderSizeOptions = () => {
+        if (!product?.sizes || !Array.isArray(product.sizes) || product.sizes.length === 0) {
+            return <option value="Standard">Standard Size</option>;
+        }
+
+        return product.sizes.map((size, index) => {
+            const sizeValue = typeof size === 'string' ? size : size.size;
+            return (
+                <option key={index} value={sizeValue}>
+                    {sizeValue}
+                </option>
+            );
+        });
     };
 
     if (loading) {
@@ -143,22 +169,20 @@ function ProductPage() {
                                 
                                 <div className="product-actions">
                                     <div className="selectors-container">
-                                        {product.sizes && product.sizes.length > 0 && (
-                                            <div className="size-selector">
+                                        <div className="size-selector">
+                                            <label htmlFor="size-select">Size:</label>
+                                            {product && (
                                                 <select 
-                                                    value={selectedSize} 
+                                                    id="size-select"
+                                                    value={selectedSize || ''}
                                                     onChange={(e) => setSelectedSize(e.target.value)}
-                                                    disabled={product.stock === 0}
+                                                    disabled={!product || product.stock === 0}
                                                 >
-                                                    <option value="" disabled>Size</option>
-                                                    {product.sizes.map((size, index) => (
-                                                        <option key={index} value={size}>
-                                                            {size}
-                                                        </option>
-                                                    ))}
+                                                    {!selectedSize && <option value="">Select Size</option>}
+                                                    {renderSizeOptions()}
                                                 </select>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
 
                                         <div className="quantity-selector">
                                             <select 
